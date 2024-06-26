@@ -2,6 +2,7 @@
 using Common.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.EntityFrameworkCore;
 using SuggestionBoxMVC.Models;
 using System.Diagnostics;
 
@@ -27,7 +28,7 @@ namespace SuggestionAPI.Controllers
             SetHub();
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string eventType)
         {
             try
             {
@@ -35,7 +36,12 @@ namespace SuggestionAPI.Controllers
 
                 if (!orderedSuggestions.Any())
                 {
-                    return View(); 
+                    return View();
+                }
+
+                if (!string.IsNullOrEmpty(eventType))
+                {
+                    orderedSuggestions = orderedSuggestions.Where(x => x.EventType == eventType).ToList();
                 }
 
                 return View(orderedSuggestions);

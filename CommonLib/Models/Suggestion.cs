@@ -65,4 +65,17 @@ public class Suggestion
     [DataType(DataType.Text)]
     public string? EventType { get; set; }
 
+    [Display(Name = "EventTime")]
+    public int? EventTime
+    {
+        get
+        {
+            if (DateTimeStart.HasValue && DateTimeEnd.HasValue)
+            {
+                TimeSpan duration = DateTimeEnd.Value - DateTimeStart.Value;
+                return (int)duration.TotalMinutes;
+            }
+            return null;
+        }
+    }
 }

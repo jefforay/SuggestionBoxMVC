@@ -12,6 +12,20 @@
 }
 else
 {
+    <form method="get" action="@Url.Action("Index", "Home")">
+        <div>
+            <label for="eventTypeFilter">Filter by Event Type:</label>
+            <select id="eventTypeFilter" name="eventType">
+                <option value="">All</option>
+                @foreach (var eventType in Model.Select(m => m.EventType).Distinct())
+                {
+                    <option value="@eventType">@eventType</option>
+                }
+            </select>
+            <button type="submit">Filter</button>
+        </div>
+    </form>
+
     <div class="table" style="overflow: auto; padding-bottom: 40px;">
         <table class="table">
             <thead>
@@ -25,6 +39,7 @@ else
                     <th>User Id</th>
                     <th>User Name</th>
                     <th>Event Type</th>
+                    <th>Event Time</th>
                 </tr>
             </thead>
             <tbody>
@@ -40,6 +55,7 @@ else
                         <td>@suggestion.UserId</td>
                         <td>@suggestion.UserName</td>
                         <td>@suggestion.EventType</td>
+                        <td>@suggestion.EventTime minutes</td>
                     </tr>
                 }
             </tbody>
