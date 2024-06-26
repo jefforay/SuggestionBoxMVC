@@ -1,0 +1,48 @@
+﻿@model List<Suggestion>
+
+@{
+    ViewData["Title"] = "Suggestion Box";
+}
+
+<h3>Home</h3>
+
+@if (Model == null || !Model.Any())
+{
+    <h4>Loading...</h4>
+}
+else
+{
+    <div class="table" style="overflow: auto; padding-bottom: 40px;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Date Time Start</th>
+                    <th>Date Time End</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Title</th>
+                    <th>User Id</th>
+                    <th>User Name</th>
+                    <th>Event Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var suggestion in Model)
+                {
+                    <tr>
+                        <td>@suggestion.Id</td>
+                        <td>@suggestion.DateTimeStart</td>
+                        <td>@suggestion.DateTimeEnd</td>
+                        <td>@suggestion.Category</td>
+                        <td>@suggestion.Description</td>
+                        <td>@suggestion.Title</td>
+                        <td>@suggestion.UserId</td>
+                        <td>@suggestion.UserName</td>
+                        <td>@suggestion.EventType</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
