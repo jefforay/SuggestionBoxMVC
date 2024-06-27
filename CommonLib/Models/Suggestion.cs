@@ -8,7 +8,7 @@ public class Suggestion
     {
     }
 
-    public Suggestion(int id, DateTime dateTimeStart, DateTime dateTimeEnd, string category, string description, string title, int userId, string userName, string eventType)
+    public Suggestion(int id, DateTime dateTimeStart, DateTime dateTimeEnd, List<string> category, string description, string title, int userId, string userName, string eventType)
     {
         Id = id;
         DateTimeStart = dateTimeStart;
@@ -40,7 +40,7 @@ public class Suggestion
     [StringLength(100, MinimumLength = 3)]
     [Required(ErrorMessage = "An category is required")]
     [DataType(DataType.Text)]
-    public string? Category { get; set; } = string.Empty;
+    public List<string>? Category { get; set; } = [];
 
     [Display(Name = "Description")]
     [StringLength(100, MinimumLength = 3)]

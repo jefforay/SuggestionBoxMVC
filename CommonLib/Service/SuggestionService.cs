@@ -61,7 +61,7 @@ public sealed class SuggestionService(IHubContext<SuggestionHub> suggestionHub, 
             }
         }
 
-        string? category = dto.Categories != null && dto.Categories.Count > 0 ? dto.Categories[0] : null;
+        List<string> categories = dto.Categories != null ? new List<string>(dto.Categories) : new List<string>();
 
         return new Suggestion
         {
@@ -72,7 +72,7 @@ public sealed class SuggestionService(IHubContext<SuggestionHub> suggestionHub, 
             EventType = dto.Type,
             DateTimeStart = start,
             DateTimeEnd = end,
-            Category = category
+            Category = categories
         };
     }
 }

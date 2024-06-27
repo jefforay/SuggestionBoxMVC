@@ -2,7 +2,6 @@
 using Common.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.EntityFrameworkCore;
 using SuggestionBoxMVC.Models;
 using System.Diagnostics;
 

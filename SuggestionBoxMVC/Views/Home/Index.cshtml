@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Suggestion Box";
+
 }
 
 <h3>Home</h3>
@@ -42,15 +43,15 @@ else
                     <th>Event Time</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="suggestionsTableBody">
                 @foreach (var suggestion in Model)
                 {
                     <tr>
                         <td>@suggestion.Id</td>
-                        <td>@suggestion.DateTimeStart</td>
-                        <td>@suggestion.DateTimeEnd</td>
-                        <td>@suggestion.Category</td>
-                        <td>@suggestion.Description</td>
+                        <td>@(suggestion.DateTimeStart != null ? suggestion.DateTimeStart.Value.ToString("dd-MM-yyyy HH:mm:ss") : "")</td>
+                        <td>@(suggestion.DateTimeEnd != null ? suggestion.DateTimeEnd.Value.ToString("dd-MM-yyyy HH:mm:ss") : "")</td>
+                        <td>@string.Join(", ", suggestion.Category!)</td>
+                        <td>@Html.Raw(suggestion.Description)</td>
                         <td>@suggestion.Title</td>
                         <td>@suggestion.UserId</td>
                         <td>@suggestion.UserName</td>
@@ -61,4 +62,48 @@ else
             </tbody>
         </table>
     </div>
+}
+
+@section Scripts {
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+
+    <script>
+        function formatDateTime(dateTimeString) {
+            var date = new Date(dateTimeString);
+            var formattedDate = date.toLocaleDateString('nl-NL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            var formattedTime = date.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            return `${formattedDate} ${formattedTime}`;
+        }
+
+        var connection = new signalR.HubConnectionBuilder().withUrl("/suggestionHub").build();
+
+        connection.start().then(function () {
+            console.log("SignalR Connected");
+
+            connection.on("ReceiveSuggestion", function (suggestion) {
+                console.log("Received suggestion:", suggestion);
+                var tableBody = document.getElementById("suggestionsTableBody");
+                var newRow = tableBody.insertRow();
+
+                var categoriesString = suggestion.category ? suggestion.category.join(", ") : "";
+
+                newRow.innerHTML = `
+                            <td>${suggestion.id}</td>
+                            <td>${formatDateTime(suggestion.dateTimeStart)}</td>
+                            <td>${formatDateTime(suggestion.dateTimeEnd)}</td>
+                            <td>${categoriesString}</td>
+                            <td>${suggestion.description}</td>
+                            <td>${suggestion.title}</td>
+                            <td>${suggestion.userId}</td>
+                            <td>${suggestion.userName}</td>
+                            <td>${suggestion.eventType}</td>
+                            <td>${suggestion.eventTime} minutes</td>
+                        `;
+
+                tableBody.insertBefore(newRow, tableBody.firstChild);
+            });
+        }).catch(function (err) {
+            console.error("SignalR Connection Error:", err);
+        });
+    </script>
 }
