@@ -2,6 +2,7 @@
 using Common.Model;
 using Common.Repositories;
 using Common.Hubs;
+using CommonLib.Models;
 
 namespace Common.Service;
 
@@ -16,16 +17,18 @@ public sealed class SuggestionService(IHubContext<SuggestionHub> suggestionHub, 
     public Task<List<Suggestion>> GetAllSuggestionsFromDBAsync()
         => _suggestionRepository.GetAllSuggestionsFromDBAsync();
 
-    public async Task<bool> InsertSuggestionAsync(Suggestion suggestion)
+    public async Task<bool> InsertSuggestionAsync(SuggestionJson suggestionJson)
     {
+        Suggestion suggestion = ConvertToSuggestion(suggestionJson);
         await _suggestionRepository.InsertSuggestionAsync(suggestion);
         await _suggestionHub.Clients.All.SendAsync("receiveSuggestion", suggestion);
 
         return true;
     }
 
-    public async Task<bool> UpdateSuggestionAsync(Suggestion suggestion)
+    public async Task<bool> UpdateSuggestionAsync(SuggestionJson suggestionJson)
     {
+        Suggestion suggestion = ConvertToSuggestion(suggestionJson);
         await _suggestionRepository.UpdateSuggestionAsync(suggestion);
         await _suggestionHub.Clients.All.SendAsync("editSuggestion", suggestion);
 
@@ -38,5 +41,38 @@ public sealed class SuggestionService(IHubContext<SuggestionHub> suggestionHub, 
         await _suggestionHub.Clients.All.SendAsync("removeSuggestion", id);
 
         return true;
+    }
+
+    private Suggestion ConvertToSuggestion(SuggestionJson dto)
+    {
+        DateTime? start = DateTime.Now;
+        DateTime? end = DateTime.Now;
+
+        if (dto.Type == "uitje")
+        {
+            if (DateTime.TryParse(dto.BeginDatum, out DateTime startDate))
+            {
+                start = startDate;
+            }
+
+            if (DateTime.TryParse(dto.EindDatum, out DateTime endDate))
+            {
+                end = endDate;
+            }
+        }
+
+        string? category = dto.Categories != null && dto.Categories.Count > 0 ? dto.Categories[0] : null;
+
+        return new Suggestion
+        {
+            Title = dto.Onderwerp,
+            Description = dto.Beschrijving,
+            UserId = dto.UserId,
+            UserName = dto.UserName,
+            EventType = dto.Type,
+            DateTimeStart = start,
+            DateTimeEnd = end,
+            Category = category
+        };
     }
 }

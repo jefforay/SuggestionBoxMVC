@@ -22,7 +22,7 @@ public class Suggestion
     }
 
     [Display(Name = "id")]
-    public int Id { get; set; }
+    public int Id { get; set; } = 0;
 
     [Display(Name = "date time")]
     [Required(ErrorMessage = "An date time is required")]
@@ -40,7 +40,7 @@ public class Suggestion
     [StringLength(100, MinimumLength = 3)]
     [Required(ErrorMessage = "An category is required")]
     [DataType(DataType.Text)]
-    public string? Category { get; set; }
+    public string? Category { get; set; } = string.Empty;
 
     [Display(Name = "Description")]
     [StringLength(100, MinimumLength = 3)]

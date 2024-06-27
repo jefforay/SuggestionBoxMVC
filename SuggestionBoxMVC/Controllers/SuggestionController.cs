@@ -1,5 +1,6 @@
 using Common.Model;
 using Common.Service;
+using CommonLib.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SuggestionAPI.Controllers;
@@ -42,25 +43,30 @@ public sealed class SuggestionController(ISuggestionService suggestionService, I
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Suggestion suggestion)
+    public async Task<IActionResult> Post([FromBody] SuggestionJson suggestionJson)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         try
         {
-            return Ok(await _suggestionService.InsertSuggestionAsync(suggestion));
+            return Ok(await _suggestionService.InsertSuggestionAsync(suggestionJson));
         }
         catch (Exception ex)
         {
-            _logger.LogCritical(ex, "Failed insering a suggestion through the controller");
+            _logger.LogCritical(ex, "Failed inserting a suggestion through the controller");
             return BadRequest(ex.Message);
         }
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put([FromBody] Suggestion suggestion)
+    public async Task<IActionResult> Put([FromBody] SuggestionJson suggestionJson)
     {
         try
         {
-            return Ok(await _suggestionService.UpdateSuggestionAsync(suggestion));
+            return Ok(await _suggestionService.UpdateSuggestionAsync(suggestionJson));
         }
         catch (Exception ex)
         {
@@ -81,5 +87,5 @@ public sealed class SuggestionController(ISuggestionService suggestionService, I
             _logger.LogCritical(ex, "Failed deleting a suggestion through the controller");
             return BadRequest(ex.Message);
         }
-    }
+    }   
 }
