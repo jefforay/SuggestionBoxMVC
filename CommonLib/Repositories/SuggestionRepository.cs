@@ -35,23 +35,20 @@ public sealed class SuggestionRepository(SuggestionDbContext context) : ISuggest
 
         if (existingSuggestion != null)
         {
-            var properties = typeof(Suggestion).GetProperties();
-
-            foreach (var property in properties)
-            {
-                var newValue = property.GetValue(suggestion);
-                var defaultValue = property.PropertyType.IsValueType ? Activator.CreateInstance(property.PropertyType) : null;
-
-                if (newValue != null && !newValue.Equals(defaultValue))
-                {
-                    property.SetValue(existingSuggestion, newValue);
-                }
-            }
+            existingSuggestion.DateTimeStart = suggestion.DateTimeStart;
+            existingSuggestion.DateTimeEnd = suggestion.DateTimeEnd;
+            existingSuggestion.Category = suggestion.Category;
+            existingSuggestion.Description = suggestion.Description;
+            existingSuggestion.Title = suggestion.Title;
+            existingSuggestion.UserId = suggestion.UserId;
+            existingSuggestion.UserName = suggestion.UserName;
+            existingSuggestion.EventType = suggestion.EventType;
 
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public async Task<Suggestion> ReadSuggestionAsync(int id)

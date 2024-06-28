@@ -8,7 +8,7 @@ public class Suggestion
     {
     }
 
-    public Suggestion(int id, DateTime dateTimeStart, DateTime dateTimeEnd, string category, string description, string title, int userId, string userName, string eventType)
+    public Suggestion(int id, DateTime dateTimeStart, DateTime dateTimeEnd, List<string> category, string description, string title, int userId, string userName, string eventType)
     {
         Id = id;
         DateTimeStart = dateTimeStart;
@@ -22,7 +22,7 @@ public class Suggestion
     }
 
     [Display(Name = "id")]
-    public int Id { get; set; }
+    public int Id { get; set; } = 0;
 
     [Display(Name = "date time")]
     [Required(ErrorMessage = "An date time is required")]
@@ -40,7 +40,7 @@ public class Suggestion
     [StringLength(100, MinimumLength = 3)]
     [Required(ErrorMessage = "An category is required")]
     [DataType(DataType.Text)]
-    public string? Category { get; set; }
+    public List<string>? Category { get; set; } = [];
 
     [Display(Name = "Description")]
     [StringLength(100, MinimumLength = 3)]
@@ -65,4 +65,17 @@ public class Suggestion
     [DataType(DataType.Text)]
     public string? EventType { get; set; }
 
+    [Display(Name = "EventTime")]
+    public int? EventTime
+    {
+        get
+        {
+            if (DateTimeStart.HasValue && DateTimeEnd.HasValue)
+            {
+                TimeSpan duration = DateTimeEnd.Value - DateTimeStart.Value;
+                return (int)duration.TotalMinutes;
+            }
+            return null;
+        }
+    }
 }

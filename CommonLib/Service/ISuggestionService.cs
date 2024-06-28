@@ -1,4 +1,5 @@
 ﻿using Common.Model;
+using CommonLib.Models;
 
 namespace Common.Service
 {
@@ -6,8 +7,8 @@ namespace Common.Service
     {
         Task<bool> DeleteSuggestionAsync(int id);
         Task<List<Suggestion>> GetAllSuggestionsFromDBAsync();
-        Task<bool> InsertSuggestionAsync(Suggestion suggestion);
+        Task<bool> InsertSuggestionAsync(SuggestionJson suggestionJson);
         Task<Suggestion> ReadSuggestionAsync(int id);
-        Task<bool> UpdateSuggestionAsync(Suggestion suggestion);
+        Task<bool> UpdateSuggestionAsync(SuggestionJson suggestionJson);
     }
 }

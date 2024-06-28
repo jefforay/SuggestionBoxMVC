@@ -3,7 +3,6 @@ using Common.Repositories;
 using Common.Options;
 using Common.Service;
 using Common.Hubs;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
