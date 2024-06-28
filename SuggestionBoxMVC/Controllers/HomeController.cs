@@ -1,5 +1,6 @@
 ﻿using Common.Model;
 using Common.Service;
+using CommonLib.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR.Client;
 using SuggestionBoxMVC.Models;
@@ -90,6 +91,89 @@ namespace SuggestionAPI.Controllers
                 _hubConnection.DisposeAsync();
             }
             base.Dispose(disposing);
+        }
+
+
+        [HttpGet("Home/{id:int}")]
+        //[ResponseCache(Duration = 60 * 60 * 24, Location = ResponseCacheLocation.Any, NoStore = false)]
+        public async Task<ActionResult<Suggestion>> Get(int id)
+        {
+            try
+            {
+                return Ok(await _suggestionService.ReadSuggestionAsync(id));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Failed reading a suggestion through the controller");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("Home")]
+        //[ResponseCache(Duration = 60, Location = ResponseCacheLocation.Any, NoStore = false)]
+        public async Task<ActionResult<List<Suggestion>>> Get()
+        {
+            try
+            {
+                return Ok(await Task.Run(_suggestionService.GetAllSuggestionsFromDBAsync));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Failed reading a suggestion list through the controller");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("Home")]
+        public async Task<IActionResult> Post([FromBody] SuggestionJson suggestionJson)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                return Ok(await _suggestionService.InsertSuggestionAsync(suggestionJson));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Failed inserting a suggestion through the controller");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("Home/Edit")]
+        public async Task<IActionResult> Put([FromBody] SuggestionJson suggestionJson)
+        {
+            try
+            {
+                return Ok(await _suggestionService.UpdateSuggestionAsync(suggestionJson));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Failed updating a suggestion through the controller");
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("Home/Delete/{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var result = await _suggestionService.DeleteSuggestionAsync(id);
+                if (result)
+                {
+                    return Ok(new { success = true });
+                }
+                return NotFound(new { success = false, message = "Suggestion not found" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogCritical(ex, "Failed deleting a suggestion through the controller");
+                return BadRequest(new { success = false, message = ex.Message });
+            }
         }
     }
 }
