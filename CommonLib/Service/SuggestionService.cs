@@ -30,7 +30,7 @@ public sealed class SuggestionService(IHubContext<SuggestionHub> suggestionHub, 
     {
         Suggestion suggestion = ConvertToSuggestion(suggestionJson);
         await _suggestionRepository.UpdateSuggestionAsync(suggestion);
-        await _suggestionHub.Clients.All.SendAsync("editSuggestion", suggestion);
+        await _suggestionHub.Clients.All.SendAsync("updateSuggestion", suggestion);
 
         return true;
     }
@@ -65,6 +65,7 @@ public sealed class SuggestionService(IHubContext<SuggestionHub> suggestionHub, 
 
         return new Suggestion
         {
+            Id = dto.Id,
             Title = dto.Onderwerp,
             Description = dto.Beschrijving,
             UserId = dto.UserId,

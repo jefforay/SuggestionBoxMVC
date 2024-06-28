@@ -5,6 +5,9 @@ namespace CommonLib.Models
 {
     public class SuggestionJson : IValidatableObject
     {
+        [Display(Name = "id")]
+        public int Id { get; set; } = 0;
+
         [Required(ErrorMessage = "Onderwerp is required")]
         [MaxLength(512, ErrorMessage = "Onderwerp can be at most 512 characters")]
         public string Onderwerp { get; set; }

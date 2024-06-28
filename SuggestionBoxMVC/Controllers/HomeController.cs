@@ -28,30 +28,33 @@ namespace SuggestionAPI.Controllers
             SetHub();
         }
 
-        public IActionResult Index(string eventType)
+public IActionResult Index(string eventType)
+{
+    try
+    {
+        var orderedSuggestions = _suggestions.OrderByDescending(x => x.Id).ToList();
+        var allEventTypes = _suggestions.Select(x => x.EventType).Distinct().ToList();
+
+        if (!orderedSuggestions.Any())
         {
-            try
-            {
-                var orderedSuggestions = _suggestions.OrderByDescending(x => x.Id).ToList();
-
-                if (!orderedSuggestions.Any())
-                {
-                    return View();
-                }
-
-                if (!string.IsNullOrEmpty(eventType))
-                {
-                    orderedSuggestions = orderedSuggestions.Where(x => x.EventType == eventType).ToList();
-                }
-
-                return View(orderedSuggestions);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while processing Index action.");
-                throw;
-            }
+            return View();
         }
+
+        if (!string.IsNullOrEmpty(eventType))
+        {
+            orderedSuggestions = orderedSuggestions.Where(x => x.EventType == eventType).ToList();
+        }
+
+        ViewBag.AllEventTypes = allEventTypes;
+
+        return View(orderedSuggestions);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error occurred while processing Index action.");
+        throw;
+    }
+}
 
         public IActionResult Privacy()
         {
