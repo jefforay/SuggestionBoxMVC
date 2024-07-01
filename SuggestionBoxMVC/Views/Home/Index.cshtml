@@ -39,6 +39,7 @@ else
                     <th>User Id</th>
                     <th>User Name</th>
                     <th>Event Type</th>
+                    <th>Event Time</th>
                     <th>Edit</th>
                     <th>Delete</th>
                 </tr>
@@ -48,14 +49,15 @@ else
                 {
                     <tr id="suggestion-@suggestion.Id">
                         <td data-field="Index">@suggestion.Id</td>
-                        <td contenteditable="true" data-field="DateTimeStart">@suggestion.DateTimeStart?.ToString("dd-MM-yyyy HH:mm:ss")</td>
-                        <td contenteditable="true" data-field="DateTimeEnd">@suggestion.DateTimeEnd?.ToString("dd-MM-yyyy HH:mm:ss")</td>
+                        <td data-field="DateTimeStart">@suggestion.DateTimeStart?.ToString("dd-MM-yyyy HH:mm:ss")</td>
+                        <td data-field="DateTimeEnd">@suggestion.DateTimeEnd?.ToString("dd-MM-yyyy HH:mm:ss")</td>
                         <td contenteditable="true" data-field="Category">@string.Join(", ", suggestion.Category)</td>
                         <td contenteditable="true" data-field="Description">@Html.Raw(suggestion.Description)</td>
                         <td contenteditable="true" data-field="Title">@suggestion.Title</td>
                         <td contenteditable="true" data-field="UserId">@suggestion.UserId</td>
                         <td contenteditable="true" data-field="UserName">@suggestion.UserName</td>
                         <td contenteditable="true" data-field="EventType">@suggestion.EventType</td>
+                        <td data-field="EventType">@suggestion.EventTime</td>
                         <td>
                             <button type="button" class="btn btn-primary" onclick="saveEdit(@suggestion.Id)">Save</button>
                         </td>
